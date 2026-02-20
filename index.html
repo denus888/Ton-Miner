@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Ton Miner</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+</head>
+
+<body>
+
+<h1>Ton Miner</h1>
+
+<div>
+Balance: <span id="balance">0</span>
+</div>
+
+<button onclick="connectWallet()">Connect Wallet</button>
+<button onclick="startMining()">Start Mining</button>
+
+<h3>Boost</h3>
+<button onclick="buyBoost(5)">Buy Boost 5 TON</button>
+<button onclick="buyBoost(15)">Buy Boost 15 TON</button>
+
+<h3>Withdraw</h3>
+<button onclick="withdraw()">Withdraw</button>
+
+<script type="module" src="app.js"></script>
+
+</body>
+</html>

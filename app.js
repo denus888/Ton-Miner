@@ -1,5 +1,9 @@
 import { CONFIG } from "./config.js";
 
+const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+    manifestUrl: "https://Ton_Miner.github.io/tonconnect-manifest.json"
+});
+
 let balance = 0;
 let rate = 0.000001;
 let mining = false;

@@ -1,59 +1,62 @@
-import { CONFIG } from "./config.js";
-
 const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
     manifestUrl: "https://Ton_Miner.github.io/tonconnect-manifest.json"
 });
 
-let balance = 0;
-let rate = 0.000001;
-let mining = false;
+let balance = parseFloat(localStorage.getItem("balance")) || 0;
+let mining = localStorage.getItem("mining") === "true" || false;
+let miningSpeed = parseFloat(localStorage.getItem("miningSpeed")) || 0.000001;
+let miningInterval = null;
 
-const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-manifestUrl: "https://ton-miner.github.io/miniapp/tonconnect-manifest.json"
-});
-
-window.connectWallet = async () => {
-  await tonConnectUI.connectWallet();
-};
-
-window.startMining = () => {
-  if(mining) return;
-  mining = true;
-
-  setInterval(()=>{
-    balance += rate;
+function updateBalanceUI() {
     document.getElementById("balance").innerText = balance.toFixed(6);
-  },1000);
-};
+}
 
-window.buyBoost = async (amount) => {
-
-  const tx = {
-    validUntil: Math.floor(Date.now()/1000)+600,
-    messages:[
-      {
-        address: CONFIG.WALLET,
-        amount: (amount*1000000000).toString()
-      }
-    ]
-  };
-
-  try{
-    await tonConnectUI.sendTransaction(tx);
-
-    if(amount === 5){
-      rate += 0.000005787;
+async function connectWallet() {
+    try {
+        const wallet = await tonConnectUI.connect();
+        alert("Wallet connected: " + wallet.account.address);
+    } catch (err) {
+        console.error(err);
+        alert("Failed to connect wallet");
     }
-    if(amount === 15){
-      rate += 0.000015787;
+}
+
+function startMining() {
+    if (mining) return;
+    mining = true;
+    localStorage.setItem("mining", "true");
+
+    miningInterval = setInterval(() => {
+        balance += miningSpeed;
+        updateBalanceUI();
+        localStorage.setItem("balance", balance);
+    }, 1000);
+}
+
+function buyBoost(amount) {
+    if (amount === 5 || amount === 15) {
+        miningSpeed += 0.000005787;
+        localStorage.setItem("miningSpeed", miningSpeed);
+        alert("Boost куплено: " + amount + " TON. Новий приріст: " + miningSpeed.toFixed(6) + " TON/sec");
     }
+}
 
-    alert("Boost activated!");
-  }catch{
-    alert("Payment cancelled");
-  }
-};
+function withdraw() {
+    if (balance < 1) {
+        alert("Minimum deposit to withdraw 1 TON");
+    } else {
+        alert("Withdraw requested: " + balance.toFixed(6) + " TON");
+    }
+}
 
-window.withdraw = () => {
-  alert("Withdraw later via backend");
-};
+function inviteFriends() {
+    balance += 0.01;
+    localStorage.setItem("balance", balance);
+    updateBalanceUI();
+    alert("You invited a friend! +0.01 TON");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    updateBalanceUI();
+    if (mining) startMining();
+});

@@ -1,14 +1,70 @@
-body{
-background:#0f172a;
-color:white;
-font-family:sans-serif;
-text-align:center;
+body {
+  background: #0f172a;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
 }
-button{
-margin:10px;
-padding:12px;
-border:none;
-border-radius:10px;
-background:#22c55e;
-color:white;
+
+.container {
+  text-align: center;
+  background: #1e293b;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px #0f172a;
+  width: 90%;
+  max-width: 400px;
+}
+
+h1 {
+  margin-bottom: 20px;
+  color: #22c55e;
+}
+
+.balance {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+button {
+  border: none;
+  border-radius: 12px;
+  padding: 12px 20px;
+  margin: 8px 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.main-btn {
+  background: #22c55e;
+  color: white;
+}
+
+.main-btn:hover {
+  background: #16a34a;
+  transform: scale(1.05);
+}
+
+.boost-btn {
+  background: #facc15;
+  color: #1f2937;
+}
+
+.boost-btn:hover {
+  background: #eab308;
+  transform: scale(1.05);
+}
+
+.menu {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  background: #1e293b;
+  padding: 12px 0;
 }

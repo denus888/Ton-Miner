@@ -1,5 +1,10 @@
 {
-  "url": "https://Ton_Miner.github.io/",
-  "name": "Ton Miner",
-  "iconUrl": "https://Ton_Miner.github.io/icon.png"
+  "id": "topminer",
+  "name": "Top Miner",
+  "description": "Persistent TON miner with Boost and Invite system",
+  "iconUrl": "https://твійсайт.com/icon.png",
+  "startUrl": "https://твійgithubusername.github.io/TopMiner/index.html",
+  "display": "standalone",
+  "theme": "dark",
+  "version": "1.0.0"
 }

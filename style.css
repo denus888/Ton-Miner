@@ -1,14 +1,42 @@
 body {
-background:#0d0d0d;
-color:white;
-font-family:Arial;
-text-align:center;
+  background:#0d0d0d;
+  color:white;
+  font-family:Arial, sans-serif;
+  text-align:center;
 }
 
 .container {
-max-width:400px;
-margin:40px auto;
-padding:20px;
-background:#1a1a1a;
-border-radius:15px;
+  max-width:400px;
+  margin:40px auto;
+  padding:20px;
+  background:#1a1a1a;
+  border-radius:15px;
+  box-shadow: 0 0 20px #00ffcc;
+}
+
+h1 {
+  color:#00ffcc;
+  margin-bottom:20px;
+}
+
+.balance {
+  font-size:20px;
+  margin:10px 0;
+}
+
+.buttons button {
+  display:inline-block;
+  margin:5px;
+  padding:10px 15px;
+  font-size:16px;
+  border:none;
+  border-radius:10px;
+  background:#00ffcc;
+  color:#000;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.buttons button:hover {
+  background:#00b38f;
 }

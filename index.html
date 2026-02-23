@@ -9,33 +9,35 @@
 <body>
 
 <div class="container">
-    <h1>Ton Miner</h1>
 
-    <div class="balance">
-        Balance: <span id="balance">0</span> TON
-    </div>
+<h1>Ton Miner</h1>
 
-    <button class="main-btn" onclick="connectWallet()">Connect Wallet</button>
-    <button class="main-btn" onclick="startMining()">Start Mining</button>
-
-    <div class="boosts">
-        <h3>Boost</h3>
-        <button onclick="buyBoost(1)">1 TON</button>
-        <button onclick="buyBoost(5)">5 TON</button>
-        <button onclick="buyBoost(15)">15 TON</button>
-    </div>
-
-    <div class="invite">
-        <h3>Invite Friends</h3>
-        <button onclick="inviteFriends()">Invite</button>
-    </div>
-
-    <div class="withdraw">
-        <h3>Withdraw</h3>
-        <button onclick="withdraw()">Withdraw</button>
-    </div>
+<div class="balance">
+Balance: <span id="balance">0</span> TON
 </div>
 
-<script type="module" src="app.js"></script>
+<button class="main-btn" onclick="connectWallet()">Connect Wallet</button>
+<button class="main-btn" onclick="startMining()">Start Mining</button>
+
+<div class="boosts">
+<h3>Boost</h3>
+<button onclick="buyBoost(1)">1 TON</button>
+<button onclick="buyBoost(5)">5 TON</button>
+<button onclick="buyBoost(15)">15 TON</button>
+</div>
+
+<div class="invite">
+<h3>Invite</h3>
+<button onclick="invite()">Invite Friend</button>
+</div>
+
+<div class="withdraw">
+<h3>Withdraw</h3>
+<button onclick="withdraw()">Withdraw</button>
+</div>
+
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>

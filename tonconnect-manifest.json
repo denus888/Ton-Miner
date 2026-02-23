@@ -1,5 +1,21 @@
 {
-  "url": "https://denus888.github.io/Ton-Miner",
+  "app_name": "Ton Miner",
   "name": "Ton Miner",
-  "iconUrl": "https://denus888.github.io/Ton-Miner/icon.png"
+  "image": "https://denus888.github.io/Ton-Miner/icon.png",
+  "about_url": "https://denus888.github.io/Ton-Miner/",
+  "universal_url": "https://denus888.github.io/Ton-Miner/",
+  "bridge": [
+    {
+      "type": "sse",
+      "url": "https://bridge.tonapi.io/bridge"
+    }
+  ],
+  "platforms": ["ios", "android", "web", "windows", "macos", "linux"],
+  "features": [
+    {
+      "name": "SendTransaction",
+      "maxMessages": 4,
+      "extraCurrencySupported": false
+    }
+  ]
 }

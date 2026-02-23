@@ -1,36 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ton Miner</title>
 <link rel="stylesheet" href="style.css">
-<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ton-connect-ui/dist/tonconnect-ui.js"></script>
 </head>
-
 <body>
-
 <div class="container">
+    <h1>TON MINER</h1>
+    <button id="connect-wallet" class="main-btn">Connect Wallet</button>
+    <div class="balance">Balance: <span id="balance">0.000000</span> TON</div>
+    <button id="start-mining" class="main-btn">Start Mining</button>
 
-<h1>TON MINER</h1>
+    <div class="boosts">
+        <h3>Buy Boost</h3>
+        <button onclick="buyBoost(1)">1 TON</button>
+        <button onclick="buyBoost(5)">5 TON</button>
+        <button onclick="buyBoost(15)">15 TON</button>
+    </div>
 
-<div id="connect-wallet"></div>
+    <div class="invite">
+        <h3>Invite Friends</h3>
+        <button onclick="inviteFriends()">Invite +0.01 TON</button>
+    </div>
 
-<div class="balance">
-Balance: <span id="balance">0</span> TON
+    <div class="withdraw">
+        <h3>Withdraw</h3>
+        <button onclick="withdraw()">Withdraw TON</button>
+    </div>
+
+    <div id="popup" class="popup"></div>
 </div>
-
-<div class="buttons">
-<button onclick="startMining()">Start Mining</button>
-<button onclick="buyBoost(1)">Boost 1 TON</button>
-<button onclick="buyBoost(5)">Boost 5 TON</button>
-<button onclick="buyBoost(15)">Boost 15 TON</button>
-<button onclick="inviteFriends()">Invite</button>
-<button onclick="withdraw()">Withdraw</button>
-</div>
-
-</div>
-
 <script src="app.js"></script>
-
 </body>
 </html>

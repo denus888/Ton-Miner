@@ -10,12 +10,12 @@
       "url": "https://bridge.tonapi.io/bridge"
     }
   ],
-  "platforms": ["ios", "android", "web", "windows", "macos", "linux"],
-  "features": [
+  "platforms": ["ios","android","web","windows","macos","linux"],
+  "features":[
     {
-      "name": "SendTransaction",
-      "maxMessages": 4,
-      "extraCurrencySupported": false
+      "name":"SendTransaction",
+      "maxMessages":4,
+      "extraCurrencySupported":false
     }
   ]
 }

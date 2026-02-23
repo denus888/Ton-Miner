@@ -3,11 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Ton Miner</title>
-
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-
 <link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 </head>
 
 <body>
@@ -22,7 +19,14 @@
 Balance: <span id="balance">0</span> TON
 </div>
 
+<div class="buttons">
 <button onclick="startMining()">Start Mining</button>
+<button onclick="buyBoost(1)">Boost 1 TON</button>
+<button onclick="buyBoost(5)">Boost 5 TON</button>
+<button onclick="buyBoost(15)">Boost 15 TON</button>
+<button onclick="inviteFriends()">Invite</button>
+<button onclick="withdraw()">Withdraw</button>
+</div>
 
 </div>
 

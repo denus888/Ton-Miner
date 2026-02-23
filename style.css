@@ -1,28 +1,14 @@
 body {
-    background: #0d0d0d;
-    color: white;
-    font-family: Arial;
-    text-align: center;
+background:#0d0d0d;
+color:white;
+font-family:Arial;
+text-align:center;
 }
 
 .container {
-    max-width: 400px;
-    margin: 50px auto;
-    background: #1a1a1a;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 0 20px #00ffcc;
-}
-
-h1 {
-    color: #00ffcc;
-}
-
-button {
-    margin: 10px;
-    padding: 12px 20px;
-    background: #00ffcc;
-    border: none;
-    border-radius: 10px;
-    font-size: 18px;
+max-width:400px;
+margin:40px auto;
+padding:20px;
+background:#1a1a1a;
+border-radius:15px;
 }

